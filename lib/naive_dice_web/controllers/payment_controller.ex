@@ -9,8 +9,8 @@ defmodule NaiveDiceWeb.PaymentController do
    	render(conn, "_payment.html")
   end
   
-  def create(conn, params = %{"stripeEmail" => _email, "stripeToken" => token}) do
-   	with {:ok, charge = %Stripe.Charge{}} <- @stripe_api.create_charge(1999, "USD", token) do
+  def create(conn, _params = %{"stripeEmail" => _email, "stripeToken" => token}) do
+   	with {:ok, _charge = %Stripe.Charge{}} <- @stripe_api.create_charge(1999, "USD", token) do
    	  conn
    	  	|> put_flash(:info, "Payment successful")
    	  	|> redirect(to: Routes.reservation_path(Endpoint, :new))	  

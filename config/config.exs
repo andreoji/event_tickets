@@ -8,9 +8,9 @@
 use Mix.Config
 
 config :naive_dice,
-  stripe_pub_key: System.get_env("STRIPE_PUB_KEY") || "pk_test_HBCgVlbbdAn3ypFkZ3octJ8a005nSiMFEL"
+  stripe_pub_key: System.get_env("STRIPE_PUB_KEY")
 
-config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET") || "sk_test_rZNsZpsp4lS7tfmYHWztQ21M00dez7DyWH"
+config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
 
 config :naive_dice,
  stripe_api: NaiveDice.Services.Stripe.Api
