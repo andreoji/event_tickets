@@ -1,0 +1,9 @@
+<section> 
+  <h1>Nice to meet you John Doe!</h1>
+  <h1>We've reserved you ticket for 5 minutes.</h1>
+  <h2>Please complete purchase using test credit card.</h2>
+ 
+  <br />
+ 
+  <%= render(NaiveDiceWeb.PaymentView, "_checkout.html", ticket: 123, conn: @conn) %>
+</section>

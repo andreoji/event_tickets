@@ -1,0 +1,12 @@
+<form action="<%= Routes.payment_path(@conn, :create) %>" method="POST">
+  <input type="hidden" value="<%= csrf_token() %>" name="_csrf_token"/>
+  <script
+    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+    data-key=<%= stripe_pub_key() %>
+    data-amount=1999
+    data-name="Sound Of Music"
+    data-description="ticket charge"
+    data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
+    data-locale="auto"
+    data-currency="usd">
+  </script>
