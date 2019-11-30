@@ -33,6 +33,15 @@ config :logger, :console,
 # Use Jason for JSON parsing in Phoenix
 config :phoenix, :json_library, Jason
 
+# Configures Guardian
+config :naive_dice, NaiveDice.Auth.Guardian,
+  issuer: "naive_dice",
+  secret_key: "HNinpKh9Ne3tr8BpjCpAEh0xzCqTIG3PWsfkR2AtzvUaRIpbs6oIQ9RcmjmGPekJ"
+
+ config :naive_dice, NaiveDice.Auth.AuthAccessPipeline,
+  module: NaiveDice.Auth.Guardian,
+  error_handler: NaiveDice.Auth.AuthErrorHandler
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"

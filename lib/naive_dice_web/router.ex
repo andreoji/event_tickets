@@ -13,13 +13,24 @@ defmodule NaiveDiceWeb.Router do
     plug :accepts, ["json"]
   end
 
+  pipeline :auth do
+    plug(NaiveDice.Auth.AuthAccessPipeline)
+  end
+
   scope "/", NaiveDiceWeb do
     pipe_through :browser
 
     get "/", PageController, :index
+    resources("/users", UserController, only: [:new, :create])
+    resources("/sessions", SessionController, only: [:new, :create])
+  end
+
+  scope "/", NaiveDiceWeb do
+    pipe_through [:browser, :auth]
 
     resources "/reservations", ReservationController, only: [:new, :create]
     resources "/payments", PaymentController, only: [:new, :create]
+    resources("/sessions", SessionController, only: [:delete])
   end
 
   # Other scopes may use custom stacks.

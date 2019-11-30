@@ -43,7 +43,11 @@ defmodule NaiveDice.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:stripity_stripe, "~> 2.7.1"}
+      {:stripity_stripe, "~> 2.7.1"},
+      {:guardian, "~> 2.0"},
+      {:comeonin, "~> 5.1"},
+      {:bcrypt_elixir, "~> 2.0"},
+      {:poison, "~> 4.0"}
     ]
   end
 
