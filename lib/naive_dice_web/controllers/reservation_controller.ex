@@ -1,7 +1,8 @@
 defmodule NaiveDiceWeb.ReservationController do
   use NaiveDiceWeb, :controller
   alias NaiveDiceWeb.Endpoint
-
+  alias NaiveDice.Tickets
+  alias NaiveDice.Accounts
   import NaiveDice.Auth, only: [load_current_user: 2]
 
   plug(:load_current_user)
@@ -14,7 +15,23 @@ defmodule NaiveDiceWeb.ReservationController do
     render(conn, "_reservation.html")
   end
 
-  def create(conn, _params, _user) do
-  	redirect(conn, to: Routes.payment_path(Endpoint, :new))
+  def create(conn, %{"name" => name}, user) do
+    with {:ok, ^user} <- name |> Accounts.check_name,
+         false <- user |> Tickets.active_reservation?,
+         {:ok, _reservation} <- user |> Tickets.create_reservation do
+      conn
+        |> put_flash(:info, "Reservation successful" )
+        |> redirect(to: Routes.payment_path(Endpoint, :new))
+    else
+      {:error, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> render("_reservation.html")
+
+      {:active_reservation, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> redirect(to: Routes.payment_path(Endpoint, :new))
+    end 
   end
 end

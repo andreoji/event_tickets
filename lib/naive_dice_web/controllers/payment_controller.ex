@@ -24,11 +24,11 @@ defmodule NaiveDiceWeb.PaymentController do
    	  	|> put_flash(:info, "Payment successful")
    	  	|> redirect(to: Routes.reservation_path(Endpoint, :new))	  
    	else
-	  error ->
-		Logger.error(inspect error)
-	    conn
-	      |> put_flash(:info, "Payment unsuccessful")
-	      |> redirect(to: Routes.reservation_path(Endpoint, :new))
+	    error ->
+		    Logger.error(inspect error)
+	      conn
+	       |> put_flash(:info, "Payment unsuccessful")
+	       |> redirect(to: Routes.reservation_path(Endpoint, :new))
    	end
   end
 end

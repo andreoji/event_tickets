@@ -24,6 +24,13 @@ defmodule NaiveDice.Accounts do
     |> Repo.get(id)
   end
 
+  def check_name(name) do
+    case Repo.get_by(User, name: name) do
+      nil -> {:error, "The full name entered doesn't match."}
+      user -> {:ok, user}
+    end
+  end
+
   def change_user_registration(%User{} = user) do
     User.create_changeset(user, %{})
   end

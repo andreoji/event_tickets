@@ -47,7 +47,8 @@ defmodule NaiveDice.MixProject do
       {:guardian, "~> 2.0"},
       {:comeonin, "~> 5.1"},
       {:bcrypt_elixir, "~> 2.0"},
-      {:poison, "~> 4.0"}
+      {:poison, "~> 4.0"},
+      {:ecto_enum, "~> 1.4"}
     ]
   end
 

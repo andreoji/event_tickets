@@ -2,7 +2,8 @@ defmodule NaiveDice.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
   alias NaiveDice.Accounts.User
-
+  alias NaiveDice.Tickets.{Payment, Reservation}
+  
   @moduledoc false
 
   schema "users" do
@@ -10,6 +11,8 @@ defmodule NaiveDice.Accounts.User do
     field(:password, :string, virtual: true)
     field(:password_hash, :string)
     field(:username, :string)
+    has_one :payment, Payment
+    has_many :reservations, Reservation
 
     timestamps()
   end
