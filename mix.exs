@@ -48,7 +48,9 @@ defmodule NaiveDice.MixProject do
       {:comeonin, "~> 5.1"},
       {:bcrypt_elixir, "~> 2.0"},
       {:poison, "~> 4.0"},
-      {:ecto_enum, "~> 1.4"}
+      {:ecto_enum, "~> 1.4"},
+      {:calendar, "~> 1.0.0"},
+      {:task_after, "~> 1.2"}
     ]
   end
 

@@ -8,8 +8,8 @@ defmodule NaiveDice.Tickets.Event do
     field :currency, :string
     field :price, :integer
     field :title, :string
-    has_many :payments, NaiveDice.Tickets.Payment
-    has_many :reservations, NaiveDice.Tickets.Reservation
+    has_many :payments, Payment
+    has_many :reservations, Reservation
     
     timestamps()
   end

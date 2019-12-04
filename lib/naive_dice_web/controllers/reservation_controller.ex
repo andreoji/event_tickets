@@ -18,7 +18,8 @@ defmodule NaiveDiceWeb.ReservationController do
   def create(conn, %{"name" => name}, user) do
     with {:ok, ^user} <- name |> Accounts.check_name,
          false <- user |> Tickets.active_reservation?,
-         {:ok, _reservation} <- user |> Tickets.create_reservation do
+         {:ok, reservation} <- user |> Tickets.create_reservation,
+         :ok <- reservation |> Tickets.set_reservation_expiry do
       conn
         |> put_flash(:info, "Reservation successful" )
         |> redirect(to: Routes.payment_path(Endpoint, :new))

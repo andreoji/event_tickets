@@ -42,6 +42,9 @@ config :naive_dice, NaiveDice.Auth.Guardian,
   module: NaiveDice.Auth.Guardian,
   error_handler: NaiveDice.Auth.AuthErrorHandler
 
+config :elixir, :time_zone_database, CustomTimeZoneDatabase
+
+config :task_after, global_name: TaskAfter
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{Mix.env()}.exs"
