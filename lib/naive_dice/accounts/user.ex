@@ -7,6 +7,7 @@ defmodule NaiveDice.Accounts.User do
   @moduledoc false
 
   schema "users" do
+    field(:email, :string)
     field(:name, :string)
     field(:password, :string, virtual: true)
     field(:password_hash, :string)
@@ -20,11 +21,14 @@ defmodule NaiveDice.Accounts.User do
   @doc false
   def create_changeset(%User{} = user, attrs) do
     user
-    |> cast(attrs, [:name, :username, :password])
-    |> validate_required([:name, :username, :password])
+    |> cast(attrs,[:email, :name, :username, :password])
+    |> validate_required([:email, :name, :username, :password])
     |> validate_length(:username, min: 3, max: 10)
     |> validate_length(:password, min: 5, max: 10)
+    |> validate_format(:email, ~r/@/)
     |> unique_constraint(:username)
+    |> unique_constraint(:name)
+    |> unique_constraint(:email)
     |> put_password_hash()
   end
 

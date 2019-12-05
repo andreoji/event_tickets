@@ -3,7 +3,7 @@ defmodule NaiveDice.Repo.Migrations.CreatePayments do
 
   def change do
     create table(:payments) do
-      add :stripe_payment_desc, :string
+      add :stripe_payment_desc, :string, null: false
       add :event_id, references(:events, on_delete: :nothing)
       add :user_id, references(:users, on_delete: :nothing)
 
