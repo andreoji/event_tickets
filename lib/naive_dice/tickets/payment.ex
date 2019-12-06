@@ -11,7 +11,7 @@ defmodule NaiveDice.Tickets.Payment do
   end
 
   @doc false
-  def changeset(payment, attrs) do
+  def create_changeset(payment, attrs) do
     payment
     |> cast(attrs, [:stripe_payment_desc])
     |> validate_required([:stripe_payment_desc])

@@ -1,7 +1,7 @@
 <section> 
   <h1>DON'T MISS YOUR TICKETS</h1>
   <h1>FOR THE BEST SHOW EVER</h1>
-  <h2>only 3 left</h2>
+  <h2>only <%= (@event.capacity - @event.number_sold) %> left</h2>
  <%= form_for @conn, Routes.reservation_path(@conn, :create), fn f-> %>
   <div class="form-group">
     <%= text_input f, :name, placeholder: "Full name", class: "form-control" %>

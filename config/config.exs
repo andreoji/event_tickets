@@ -15,6 +15,9 @@ config :stripity_stripe, api_key: System.get_env("STRIPE_SECRET")
 config :naive_dice,
  stripe_api: NaiveDice.Services.Stripe.Api
 
+ config :naive_dice,
+  event_title: "The Sound of Music"
+
 config :naive_dice,
   ecto_repos: [NaiveDice.Repo]
 

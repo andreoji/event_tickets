@@ -13,7 +13,7 @@ defmodule NaiveDice.Accounts.User do
     field(:password_hash, :string)
     field(:username, :string)
     has_one :payment, Payment
-    has_many :reservations, Reservation
+    has_one :reservations, Reservation
 
     timestamps()
   end

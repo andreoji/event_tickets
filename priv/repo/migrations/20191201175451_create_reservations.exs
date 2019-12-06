@@ -13,5 +13,6 @@ defmodule NaiveDice.Repo.Migrations.CreateReservations do
 
     create index(:reservations, [:event_id])
     create index(:reservations, [:user_id])
+    create unique_index(:reservations, [:user_id, :event_id])
   end
 end
