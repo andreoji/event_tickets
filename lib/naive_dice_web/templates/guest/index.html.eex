@@ -7,4 +7,8 @@
 		</tbody>
     </table>
   </div>
+  <%= form_for @conn, Routes.guest_path(@conn, :index), fn _f-> %>
+
+  <%= submit "Clear guest list and start over again with 5 tickets available", class: "btn btn-primary" %>
+  <% end %>
 </section>
