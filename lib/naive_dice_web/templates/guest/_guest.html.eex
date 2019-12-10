@@ -1,0 +1,5 @@
+<span>
+  <tr>
+    <td><h2><%= @guest %></h2></td>
+  </tr>
+</span>

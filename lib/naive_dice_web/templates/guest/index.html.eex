@@ -1,0 +1,10 @@
+<section>
+  <div>
+	<h1>Registered Guests</h1>
+      <table>
+      	<tbody>
+      	<%= render_many @guests, NaiveDiceWeb.GuestView, "_guest.html", conn: @conn %>
+		</tbody>
+    </table>
+  </div>
+</section>

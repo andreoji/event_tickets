@@ -11,6 +11,7 @@ defmodule NaiveDice.Tickets do
   alias NaiveDice.Repo
   alias NaiveDice.Tickets
   alias NaiveDice.Tickets.{Event, Payment, Reservation}
+  alias NaiveDice.Accounts.User
 
   @interval 120_000
 
@@ -95,6 +96,15 @@ defmodule NaiveDice.Tickets do
       error ->
         Logger.error(inspect error)
     end
+  end
+
+  def guests(event) do
+    (from u in User,
+      join: p in Payment,
+      on: u.id == p.user_id,
+    where: p.event_id == ^event.id,
+    select: u.name)
+    |> Repo.all
   end
 
   def sold_out?(event) do

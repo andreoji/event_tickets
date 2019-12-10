@@ -30,7 +30,8 @@ defmodule NaiveDiceWeb.Router do
 
     resources "/reservations", ReservationController, only: [:new, :create]
     resources "/payments", PaymentController, only: [:new, :create]
-    resources("/sessions", SessionController, only: [:delete])
+    resources "/sessions", SessionController, only: [:delete]
+    resources "/guests", GuestController, only: [:index]
   end
 
   # Other scopes may use custom stacks.

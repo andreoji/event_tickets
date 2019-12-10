@@ -1,0 +1,7 @@
+<section> 
+  <h1>Congratulations <%= @current_user.name %>!</h1>
+  <h1>You've been added to the <%= link("list of guests", to: Routes.guest_path(@conn, :index)) %></h1>
+ 
+  <br />
+ 
+</section>

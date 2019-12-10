@@ -29,7 +29,7 @@ defmodule NaiveDiceWeb.PaymentController do
       {:ok, _payment} <- charge |> Tickets.create_payment(user, event, reservation) do
       conn
         |> put_flash(:info, "Payment successful")
-        |> redirect(to: Routes.reservation_path(Endpoint, :new))
+        |> render("_congratulations.html")
     else
       {:sold_out, error} ->
         conn
