@@ -21,10 +21,10 @@ defmodule NaiveDiceWeb.PaymentController do
   end
   
   def create(conn, %{"stripeEmail" => email, "stripeToken" => token}, user, event) do
-    with false <- user |> Tickets.has_ticket?(event),
+    with false <- event |> Tickets.sold_out?,
+      false <- user |> Tickets.has_ticket?(event),
       {:active, reservation} <- user |> Tickets.reservation_status,
       {:ok, ^user} <- user |> Accounts.check_email(email),
-      false <- event |> Tickets.sold_out?,
       {:ok, charge = %Stripe.Charge{}} <- @stripe_api.create_charge(event.price, event.currency, token),
       {:ok, _payment} <- charge |> Tickets.create_payment(user, event, reservation) do
       conn

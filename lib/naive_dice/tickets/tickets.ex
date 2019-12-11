@@ -8,12 +8,12 @@ defmodule NaiveDice.Tickets do
   import Plug.Conn
 
   @event_title Application.get_env(:naive_dice, :event_title)
+  @expiry_interval Application.get_env(:naive_dice, :expiry_interval)
+
   alias NaiveDice.Repo
   alias NaiveDice.Tickets
   alias NaiveDice.Tickets.{Event, Payment, Reservation}
   alias NaiveDice.Accounts.User
-
-  @interval 120_000
 
   def upsert_reservation(user) do
     with {:ok, event} <- Tickets.active_event,
@@ -75,10 +75,10 @@ defmodule NaiveDice.Tickets do
   end
   
   def set_reservation_expiry(reservation) do
-    @interval
-    |> TaskAfter.task_after(fn -> reservation |> expire_active_reservation end)
-    |> case do
-      {:ok, auto_id} -> {:ok, auto_id}
+    with {:ok, auto_id} <- @expiry_interval |> TaskAfter.task_after((fn -> reservation |> expire_active_reservation end)),
+      :ok <- auto_id |> NaiveDice.Teardown.ExpiryTasks.add_task do
+      {:ok, auto_id}
+    else 
       error ->
         Logger.error(inspect error)
         {:error, "Oops! Something went wrong"}

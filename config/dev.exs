@@ -1,5 +1,8 @@
 use Mix.Config
 
+config :naive_dice,
+  expiry_interval: 120_000
+
 # Configure your database
 config :naive_dice, NaiveDice.Repo,
   username: "andreo",

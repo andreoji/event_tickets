@@ -11,9 +11,10 @@ defmodule NaiveDice.Application do
       # Start the Ecto repository
       NaiveDice.Repo,
       # Start the endpoint when the application starts
-      NaiveDiceWeb.Endpoint
+      NaiveDiceWeb.Endpoint,
       # Starts a worker by calling: NaiveDice.Worker.start_link(arg)
       # {NaiveDice.Worker, arg},
+      {NaiveDice.Teardown.ExpiryTasks, []}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

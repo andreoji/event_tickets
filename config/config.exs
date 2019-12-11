@@ -19,6 +19,9 @@ config :naive_dice,
   event_title: "The Sound of Music"
 
 config :naive_dice,
+  expiry_interval: 300_000
+
+config :naive_dice,
   ecto_repos: [NaiveDice.Repo]
 
 # Configures the endpoint

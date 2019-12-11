@@ -1,4 +1,4 @@
-defmodule NaiveDice.Teardown do
+defmodule NaiveDice.Teardown.Entities do
   @moduledoc """
   The Teardown context. Only needed for testing purposes.
   """
@@ -11,14 +11,14 @@ defmodule NaiveDice.Teardown do
   alias NaiveDice.Tickets.{Event, Payment, Reservation}
 
   def rip_it_up_and_start_again(event) do
-  	with  {_r_count, nil} <- from(r in Reservation, where: r.event_id == ^event.id) |> Repo.delete_all,
+    with  {_r_count, nil} <- from(r in Reservation, where: r.event_id == ^event.id) |> Repo.delete_all,
       {_p_count, nil} <- from(p in Payment, where: p.event_id == ^event.id) |> Repo.delete_all,
-  	  {:ok, _event} <- event |> set_event_defaults
-  	do
-  	  :successful_teardown
-  	else
- 	  	error -> {:unsuccessful_teardown, error}
-  	end
+      {:ok, _event} <- event |> set_event_defaults
+    do
+      :successful_teardown
+    else
+      error -> {:unsuccessful_teardown, error}
+    end
   end
 
   defp set_event_defaults(event) do
