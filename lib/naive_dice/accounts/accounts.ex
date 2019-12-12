@@ -8,11 +8,6 @@ defmodule NaiveDice.Accounts do
   alias NaiveDice.Repo
   alias NaiveDice.Accounts.User
 
-  def list_users do
-    User
-    |> Repo.all()
-  end
-
   def create_user(attrs \\ %{}) do
     %User{}
     |> User.create_changeset(attrs)
@@ -25,8 +20,9 @@ defmodule NaiveDice.Accounts do
   end
 
   def check_name(user, name) do
-    (from u in User, where: u.id == ^user.id and
-                                  u.name == ^name)
+    from(u in User,
+      where: u.id == ^user.id and u.name == ^name
+    )
     |> Repo.one
     |> case do
          nil -> {:error, "The full name entered doesn't match"}
@@ -35,8 +31,9 @@ defmodule NaiveDice.Accounts do
   end
 
   def check_email(user, email) do
-    (from u in User, where: u.id == ^user.id and
-                                  u.email == ^email)
+    from(u in User,
+      where: u.id == ^user.id and u.email == ^email
+    )
     |> Repo.one
     |> case do
          nil -> {:error, "The email entered doesn't match"}

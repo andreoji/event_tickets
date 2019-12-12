@@ -20,22 +20,22 @@ defmodule NaiveDiceWeb.GuestController do
   end
 
   def create(conn, _params, _user, event) do
-    with :successful_teardown <- event |> Entities.rip_it_up_and_start_again,
-      {:ok, :cancelled} <- NaiveDice.Teardown.ExpiryTasks.cancel_all do
+    with  :successful_teardown <- event |> Entities.rip_it_up_and_start_again,
+          {:ok, :cancelled} <- NaiveDice.Teardown.ExpiryTasks.cancel_all do
       conn
-       |> put_flash(:info, "Successful teardown")
-       |> redirect(to: Routes.reservation_path(Endpoint, :new))
+      |> put_flash(:info, "Successful teardown")
+      |> redirect(to: Routes.reservation_path(Endpoint, :new))
     else
       {:unsuccessful_teardown, _error} = e ->
         Logger.error(inspect e)
         conn
-          |>put_flash(:error, "The teardown may have errored")
-          |> render("index.html", guests: [])
+        |> put_flash(:error, "The teardown may have errored")
+        |> render("index.html", guests: [])
       
       error -> Logger.error(inspect error)
         conn
-          |>put_flash(:error, "The teardown may have errored")
-          |> render("index.html", guests: [])
+        |> put_flash(:error, "The teardown may have errored")
+        |> render("index.html", guests: [])
     end
   end
 end

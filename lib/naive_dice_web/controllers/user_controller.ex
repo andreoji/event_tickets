@@ -6,11 +6,9 @@ defmodule NaiveDiceWeb.UserController do
   alias NaiveDiceWeb.Endpoint
 
   def index(conn, _params) do
-    users = Accounts.list_users()
-
     conn
     |> assign(:current_user, Guardian.Plug.current_resource(conn))
-    |> render("index.html", users: users)
+    |> render("index.html")
   end
 
   def new(conn, _params) do

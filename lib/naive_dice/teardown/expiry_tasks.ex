@@ -1,5 +1,4 @@
 defmodule NaiveDice.Teardown.ExpiryTasks do
-  require Logger
   use Agent
   
   def start_link(_args), do: Agent.start_link fn -> [] end, name: __MODULE__

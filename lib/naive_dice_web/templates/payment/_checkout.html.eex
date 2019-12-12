@@ -4,7 +4,7 @@
     src="https://checkout.stripe.com/checkout.js" class="stripe-button"
     data-key=<%= stripe_pub_key() %>
     data-amount=<%= @event.price %>
-    data-name=<%= @event.title %>
+    data-name="Naive Dice"
     data-description="ticket charge"
     data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
     data-locale="auto"

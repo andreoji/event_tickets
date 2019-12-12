@@ -16,10 +16,10 @@ defmodule NaiveDiceWeb.ReservationController do
   end
 
   def create(conn, %{"name" => name}, user, event) do
-    with  false <- event |> Tickets.sold_out?,
-          {:ok, ^user} <- user |> Accounts.check_name(name),
-          false <- user |> Tickets.has_ticket?(event),
-          false <- user |> Tickets.active_reservation?,
+    with  {:ok, ^user} <- user |> Accounts.check_name(name),
+          false <- user |> Tickets.has_ticket(event),
+          false <- event |> Tickets.is_sold_out,
+          false <- user |> Tickets.is_reservation_active,
           {:ok, reservation} <- user |> Tickets.upsert_reservation,
           {:ok, _auto_id} <- reservation |> Tickets.set_reservation_expiry do
       conn
@@ -29,22 +29,19 @@ defmodule NaiveDiceWeb.ReservationController do
       {:sold_out, error} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.reservation_path(Endpoint, :new))
-
+        |> render("_reservation.html")
       {:error, error} ->
         conn
         |> put_flash(:error, error)
         |> render("_reservation.html")
-
       {:active, error} ->
         conn
         |> put_flash(:error, error)
         |> redirect(to: Routes.payment_path(Endpoint, :new))
-
       {:has_ticket, error} ->
         conn
         |> put_flash(:error, error)
-        |> redirect(to: Routes.reservation_path(Endpoint, :new))
-    end 
+        |> render("_reservation.html")
+    end
   end
 end

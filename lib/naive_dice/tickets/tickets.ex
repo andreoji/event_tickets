@@ -15,6 +15,11 @@ defmodule NaiveDice.Tickets do
   alias NaiveDice.Tickets.{Event, Payment, Reservation}
   alias NaiveDice.Accounts.User
 
+  def load_event(conn, _) do
+    conn
+    |> assign(:event, from(e in Event, where: e.title == @event_title) |> Repo.one)
+  end
+
   def upsert_reservation(user) do
     with {:ok, event} <- Tickets.active_event,
          {status, reservation} <- user |> Tickets.reservation_status,
@@ -45,8 +50,13 @@ defmodule NaiveDice.Tickets do
     end
   end
 
-  def active_reservation?(user) do
-    case active_reservation_query(user) |> Repo.exists? do
+  def is_reservation_active(user) do
+    from(r in Reservation,
+      where:  r.user_id == ^user.id and
+              r.status == "active"
+    )
+    |> Repo.exists?
+    |> case do
       false -> false
       true -> {:active, "You have a current reservation, proceed with payment"}
     end
@@ -55,23 +65,18 @@ defmodule NaiveDice.Tickets do
   def reservation_status(user)  do
     Repo.get_by(Reservation, user_id: user.id)
     |> case do
-      nil -> {:none, nil}
-      reservation -> {reservation.status, reservation}
+        nil -> {:none, nil}
+        reservation -> {reservation.status, reservation}
     end
   end
 
   def active_event  do
-    (from e in Event, where: e.event_status == "active" )
+    from(e in Event, where: e.event_status == "active")
     |> Repo.one
     |> case do
-         nil -> {:error, "There is no active event"}
-         event -> {:ok, event}
+        nil -> {:error, "There is no active event"}
+        event -> {:ok, event}
     end
-  end
-
-  def load_event(conn, _) do
-    conn
-    |> assign(:event, (from e in Event, where: e.title == @event_title) |> Repo.one)
   end
   
   def set_reservation_expiry(reservation) do
@@ -85,6 +90,14 @@ defmodule NaiveDice.Tickets do
     end
   end
 
+  defp expire_active_reservation(reservation) do
+    reservation = Repo.get(Reservation, reservation.id)
+    if (reservation.status == :active) do
+      reservation = reservation |> Ecto.Changeset.change(status: :expired)
+      reservation |> Repo.update
+    end
+  end
+
   def create_payment(charge, user, event, reservation) do
     with payment <- %Payment{user_id: user.id, event_id: event.id} |> Payment.create_changeset(%{stripe_payment_desc: charge.id}),
       {:ok, payment} <- payment |> Repo.insert,
@@ -95,44 +108,7 @@ defmodule NaiveDice.Tickets do
     else
       error ->
         Logger.error(inspect error)
-    end
-  end
-
-  def guests(event) do
-    (from u in User,
-      join: p in Payment,
-      on: u.id == p.user_id,
-    where: p.event_id == ^event.id,
-    select: u.name)
-    |> Repo.all
-  end
-
-  def sold_out?(event) do
-    event = Repo.get(Event, event.id)
-      cond do
-        event.event_status == :sold_out ->
-          {:sold_out, "Sorry #{event.title} is now sold out"}
-        true -> false
-      end
-  end
-
-  def has_ticket?(user, event) do
-    (from p in Payment,
-               where:  p.user_id == ^user.id and
-                       p.event_id == ^event.id)
-
-    |> Repo.exists?
-    |> case do
-        false -> false
-        true -> {:has_ticket, "You have a ticket already"}
-    end
-  end
-
-  defp expire_active_reservation(reservation) do
-    reservation = Repo.get(Reservation, reservation.id)
-    if (reservation.status == :active) do
-      reservation = reservation |> Ecto.Changeset.change(status: :expired)
-      reservation |> Repo.update
+        {:error, "Oops! Something went wrong"}
     end
   end
 
@@ -143,7 +119,10 @@ defmodule NaiveDice.Tickets do
   end
 
   defp increment_number_sold(event) do
-    (from(e in Event, update: [inc: [number_sold: 1]], where: e.id == ^event.id))
+    from(e in Event,
+      update: [inc: [number_sold: 1]],
+      where: e.id == ^event.id
+    )
     |> Repo.update_all([])
   end
 
@@ -159,8 +138,34 @@ defmodule NaiveDice.Tickets do
       end
   end
 
-  defp active_reservation_query(user)  do
-    from r in Reservation, where: r.user_id == ^user.id and
-                                  r.status == "active"
+  def is_sold_out(event) do
+    event = Repo.get(Event, event.id)
+      cond do
+        event.event_status == :sold_out ->
+          {:sold_out, "Sorry #{event.title} is now sold out"}
+        true -> false
+      end
+  end
+
+  def has_ticket(user, event) do
+    from(p in Payment,
+      where:  p.user_id == ^user.id and
+      p.event_id == ^event.id
+    )
+    |> Repo.exists?
+    |> case do
+        false -> false
+        true -> {:has_ticket, "You have a ticket already"}
+    end
+  end
+
+  def guests(event) do
+    from(u in User,
+      join: p in Payment,
+      on: u.id == p.user_id,
+    where: p.event_id == ^event.id,
+    select: u.name
+    )
+    |> Repo.all
   end
 end

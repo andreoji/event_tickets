@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :naive_dice, NaiveDice.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "andreo",
+  password: "pa55w0rd",
   database: "naive_dice_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
