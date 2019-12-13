@@ -17,7 +17,7 @@ defmodule NaiveDice.Tickets.Event do
   end
 
   @doc false
-  def changeset(event, attrs) do
+  def create_changeset(event, attrs) do
     event
     |> cast(attrs, [:title, :event_status, :capacity, :price, :currency])
     |> validate_required([:title, :event_status, :capacity, :price, :currency])
