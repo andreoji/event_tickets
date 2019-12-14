@@ -32,7 +32,7 @@ defmodule NaiveDice.Tickets do
     end 
   end
 
-  defp do_upsert_reservation(event, user, {:none, _reservation}) do
+  defp do_upsert_reservation(event, user, {:no_reservation, _error}) do
     with reservation <- %Reservation{user_id: user.id, event_id: event.id} |> Reservation.create_changeset(%{status: :active}),
       {:ok, reservation} <- reservation |> Repo.insert do
       {:ok, reservation}
@@ -65,7 +65,7 @@ defmodule NaiveDice.Tickets do
   def reservation_status(user)  do
     Repo.get_by(Reservation, user_id: user.id)
     |> case do
-        nil -> {:none, nil}
+        nil -> {:no_reservation, "You don't have a current reservation, proceed with reservation first"}
         reservation -> {reservation.status, reservation}
     end
   end
@@ -96,6 +96,21 @@ defmodule NaiveDice.Tickets do
       reservation = reservation |> Ecto.Changeset.change(status: :expired)
       reservation |> Repo.update
     end
+  end
+
+  def expire_users_active_reservation(id) do
+    _reservation =
+      from(r in Reservation,
+       where: r.status == "active" and
+              r.user_id == ^id
+      )
+      |> Repo.one
+      |> case do
+          nil -> :noop
+          reservation ->
+            reservation = reservation |> Ecto.Changeset.change(status: :expired)
+            reservation |> Repo.update
+      end
   end
 
   def create_payment(charge, user, event, reservation) do

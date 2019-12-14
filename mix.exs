@@ -49,7 +49,8 @@ defmodule NaiveDice.MixProject do
       {:bcrypt_elixir, "~> 2.0"},
       {:poison, "~> 4.0"},
       {:ecto_enum, "~> 1.4"},
-      {:task_after, "~> 1.2"}
+      {:task_after, "~> 1.2"},
+      {:ex_machina, "~> 2.3"}
     ]
   end
 

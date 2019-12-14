@@ -46,6 +46,10 @@ defmodule NaiveDiceWeb.PaymentController do
         conn
         |> put_flash(:error, error)
         |> render("_payment.html")
+      {:no_reservation, error} ->
+        conn
+         |> put_flash(:error, error)
+         |> redirect(to: Routes.reservation_path(Endpoint, :new))
     end
   end
 end
