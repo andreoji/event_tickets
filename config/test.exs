@@ -1,5 +1,8 @@
 use Mix.Config
 
+config :naive_dice,
+ stripe_api: NaiveDice.Services.Stripe.InMemory
+
 # Configure your database
 config :naive_dice, NaiveDice.Repo,
   username: "andreo",

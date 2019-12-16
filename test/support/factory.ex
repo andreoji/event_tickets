@@ -2,11 +2,12 @@ defmodule NaiveDiceWeb.Factory do
   # with Ecto
   use ExMachina.Ecto, repo: NaiveDice.Repo
   alias NaiveDice.Accounts.User
-  alias NaiveDice.Tickets.{Event, Reservation}
+  alias NaiveDice.Tickets.{Event, Payment, Reservation}
+  @event_title Application.get_env(:naive_dice, :event_title)
 
   def event_factory do
     %Event{
-      title: "The Sound of Music",
+      title: @event_title,
       price: 1999,
       currency: "USD",
       capacity: 5,
@@ -29,6 +30,14 @@ defmodule NaiveDiceWeb.Factory do
   def reservation_factory do
     %Reservation{
       status: :active,
+      event_id: build(:event),
+      user_id: build(:user)
+    }
+  end
+
+  def payment_factory do
+    %Payment{
+      stripe_payment_desc: "ch_1FqHamHCCcwyjBBXsipQMPMT",
       event_id: build(:event),
       user_id: build(:user)
     }

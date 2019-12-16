@@ -24,7 +24,7 @@ defmodule NaiveDiceWeb.PaymentController do
           false <- user |> Tickets.has_ticket(event),
           false <- event |> Tickets.is_sold_out,
           {:active, reservation} <- user |> Tickets.reservation_status,
-          {:ok, charge = %Stripe.Charge{}} <- @stripe_api.create_charge(event.price, event.currency, token),
+          {:ok, charge} <- @stripe_api.create_charge(event.price, event.currency, token),
           {:ok, _payment} <- charge |> Tickets.create_payment(user, event, reservation) do
       conn
         |> put_flash(:info, "Payment successful")
@@ -38,9 +38,9 @@ defmodule NaiveDiceWeb.PaymentController do
         conn
          |> put_flash(:error, "You reservation has expired, enter name again")
          |> redirect(to: Routes.reservation_path(Endpoint, :new))
-      {:error, error} ->
+      {:stripe_error, error} ->
         conn
-         |> put_flash(:info, error)
+         |> put_flash(:error, error)
          |> render("_payment.html")
       {:has_ticket, error} ->
         conn
@@ -50,6 +50,10 @@ defmodule NaiveDiceWeb.PaymentController do
         conn
          |> put_flash(:error, error)
          |> redirect(to: Routes.reservation_path(Endpoint, :new))
+      {:error, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> render("_payment.html")
     end
   end
 end
