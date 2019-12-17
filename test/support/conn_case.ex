@@ -35,7 +35,20 @@ defmodule NaiveDiceWeb.ConnCase do
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(NaiveDice.Repo, {:shared, self()})
     end
+    use Phoenix.ConnTest
 
-    {:ok, conn: Phoenix.ConnTest.build_conn()}
+    alias NaiveDiceWeb.Router.Helpers, as: Routes
+    
+    conn = build_conn()
+
+    post_session_fun = fn user, conn ->
+      Phoenix.ConnTest.dispatch(conn,
+        NaiveDiceWeb.Endpoint,
+        :post, Routes.session_path(conn, :create),
+        session: %{username: user.username, password: user.password}
+      )
+    end
+   
+    {:ok, conn: conn, post_session_fun: post_session_fun}
   end
 end

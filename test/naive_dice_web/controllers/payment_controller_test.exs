@@ -1,6 +1,5 @@
 defmodule NaiveDiceWeb.PaymentControllerTest do
   use NaiveDiceWeb.ConnCase
-  import NaiveDiceWeb.Factory
   import Ecto.Query, warn: false
   alias NaiveDice.Tickets.Payment
 
@@ -103,20 +102,5 @@ defmodule NaiveDiceWeb.PaymentControllerTest do
       assert response(conn, 200) =~ "Nice to meet you #{user.name}"
       assert reservation.status == :active
     end
-  end
-
-  defp log_user_in(context), do: do_log_user_in(context)
-
-  defp do_log_user_in(%{event: _event, user: user} = context) do
-    conn = build_conn()
-    conn = post(conn, Routes.session_path(conn, :create), session: %{username: user.username, password: user.password})
-    context |> Map.merge(%{conn: conn})
-  end
-
-  defp do_log_user_in(%{event: _event} = context) do
-    user = insert(:user)
-    conn = build_conn()
-    conn = post(conn, Routes.session_path(conn, :create), session: %{username: user.username, password: user.password})
-    context |> Map.merge(%{conn: conn, user: user})
   end
 end

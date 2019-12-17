@@ -4,7 +4,20 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
   alias NaiveDice.Tickets.{Event, Reservation}
   alias NaiveDice.Repo
 
-  # helpers shared reservation and payment controllers
+  # helpers shared between reservation and payment controllers
+  def log_user_in(context), do: do_log_user_in(context)
+
+  def do_log_user_in(%{conn: conn, event: _event, user: user, post_session_fun: post_session_fun} = context) do
+    conn = post_session_fun.(user, conn)
+    context |> Map.merge(%{conn: conn, params: %{"name" => user.name}})
+  end
+
+  def do_log_user_in(%{conn: conn, event: _event, post_session_fun: post_session_fun} = context) do
+    user = insert(:user)
+    conn = post_session_fun.(user, conn)
+    context |> Map.merge(%{conn: conn, params: %{"name" => user.name}, user: user})
+  end
+  
   def create_event(context) do
     event = insert(:event)
     context |> Map.merge(%{event: event})

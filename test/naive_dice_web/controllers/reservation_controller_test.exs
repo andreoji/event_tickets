@@ -1,6 +1,5 @@
 defmodule NaiveDiceWeb.ReservationControllerTest do
   use NaiveDiceWeb.ConnCase
-  import NaiveDiceWeb.Factory
   import Ecto.Query, warn: false
   alias NaiveDice.Tickets.Reservation
 
@@ -128,20 +127,5 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
       assert reservation_count(Reservation) == count_before
       assert get_flash(conn, :error) == "Sorry #{event.title} is now sold out"
     end
-  end
-
-  defp log_user_in(context), do: do_log_user_in(context)
-
-  defp do_log_user_in(%{event: _event, user: user} = context) do
-    conn = build_conn()
-    conn = post(conn, Routes.session_path(conn, :create), session: %{username: user.username, password: user.password})
-    context |> Map.merge(%{conn: conn, params: %{"name" => user.name}})
-  end
-
-  defp do_log_user_in(%{event: _event} = context) do
-    user = insert(:user)
-    conn = build_conn()
-    conn = post(conn, Routes.session_path(conn, :create), session: %{username: user.username, password: user.password})
-    context |> Map.merge(%{conn: conn, params: %{"name" => user.name}, user: user})
   end
 end
