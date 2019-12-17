@@ -92,7 +92,6 @@ defmodule NaiveDiceWeb.PaymentControllerTest do
       user: user,
       reservation: reservation
     } do
-      reservation = reservation |> reload_reservation
       count_before = payment_count(Payment)
 
       conn = post(conn, Routes.payment_path(conn, :create), %{"stripeEmail" => user.email, "stripeToken" => :stripe_error})
@@ -100,6 +99,7 @@ defmodule NaiveDiceWeb.PaymentControllerTest do
       assert payment_count(Payment) == count_before
       assert get_flash(conn, :error) == "The payment was unsuccessful, please try again"
       assert response(conn, 200) =~ "Nice to meet you #{user.name}"
+      reservation = reservation |> reload_reservation
       assert reservation.status == :active
     end
   end
