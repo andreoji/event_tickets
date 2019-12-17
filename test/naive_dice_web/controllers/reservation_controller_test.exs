@@ -2,8 +2,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
   use NaiveDiceWeb.ConnCase
   import NaiveDiceWeb.Factory
   import Ecto.Query, warn: false
-  alias NaiveDice.Tickets.{Event, Reservation}
-  alias NaiveDice.Repo
+  alias NaiveDice.Tickets.Reservation
 
   describe "create/4" do
     setup [:create_event, :log_user_in]
@@ -145,42 +144,4 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
     conn = post(conn, Routes.session_path(conn, :create), session: %{username: user.username, password: user.password})
     context |> Map.merge(%{conn: conn, params: %{"name" => user.name}, user: user})
   end
-
-  defp create_event(context) do
-    event = insert(:event)
-    context |> Map.merge(%{event: event})
-  end
-
-  defp sell_event_out(%{event: event} = context) do
-    {:ok, event} = 
-      %Event{id: event.id}
-        |> Ecto.Changeset.change(event_status: :sold_out, number_sold: 5)
-        |> Repo.update
-    %{context | event: event}
-  end
-
-  defp create_sold_out_event(context) do
-    event = insert(:event, event_status: :sold_out, number_sold: 5)
-    context |> Map.merge(%{event: event})
-  end
-
-  defp already_reserved(%{event: event, user: user} = context) do
-    insert(:reservation, event_id: event.id, user_id: user.id)
-    context
-  end
-
-  defp create_user_with_expired_reservation(%{event: event} = context) do
-    user = insert(:user)
-    reservation = insert(:reservation, event_id: event.id, user_id: user.id, status: :expired)
-    context |> Map.merge(%{user: user, reservation: reservation})
-  end
-
-  defp create_an_expired_reservation(%{event: event, user: user} = context) do
-    reservation = insert(:reservation, event_id: event.id, user_id: user.id, status: :expired)
-    context |> Map.merge(%{reservation: reservation})
-  end
-
-  defp reload_event(event), do: Repo.get(Event, event.id)
-  defp reservation_count(query), do: Repo.one(from(r in query, select: count(r.id)))
-  defp reload_reservation(reservation), do: Repo.get(Reservation, reservation.id)
 end

@@ -22,7 +22,7 @@ defmodule NaiveDiceWeb.ConnCase do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
       alias NaiveDiceWeb.Router.Helpers, as: Routes
-      import NaiveDiceWeb.TestHelpers
+      import NaiveDiceWeb.TestHelpers.{Factory, NamedSetup}
 
       # The default endpoint for testing
       @endpoint NaiveDiceWeb.Endpoint

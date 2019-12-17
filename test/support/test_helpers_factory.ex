@@ -1,10 +1,12 @@
-defmodule NaiveDiceWeb.TestHelpers do
+defmodule NaiveDiceWeb.TestHelpers.Factory do
   alias NaiveDice.Repo
   alias NaiveDice.Accounts.User
   alias NaiveDice.Tickets.Event
 
+  @event_title Application.get_env(:naive_dice, :event_title)
+
   @event %{
-  	title: "The Sound of Music",
+  	title: @event_title,
   	capacity: 5,
   	price: 1999,
   	currency: "USD",
