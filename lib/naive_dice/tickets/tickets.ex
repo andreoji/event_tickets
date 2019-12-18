@@ -114,7 +114,7 @@ defmodule NaiveDice.Tickets do
   end
 
   def create_payment(charge, user, event, reservation) do
-    with payment <- %Payment{user_id: user.id, event_id: event.id} |> Payment.create_changeset(%{stripe_payment_desc: charge.id}),
+    with payment <- %Payment{user_id: user.id, event_id: event.id} |> Payment.create_changeset(%{stripe_payment_id: charge.id}),
       {:ok, payment} <- payment |> Repo.insert,
       {:ok, _reservation} <- reservation |> set_reservation_to_completed,
       {1, nil} <- event |> increment_number_sold,

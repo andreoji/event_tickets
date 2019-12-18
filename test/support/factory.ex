@@ -37,7 +37,7 @@ defmodule NaiveDiceWeb.Factory do
 
   def payment_factory do
     %Payment{
-      stripe_payment_desc: "ch_1FqHamHCCcwyjBBXsipQMPMT",
+      stripe_payment_id: sequence(:stripe_payment_id, &"ch_#{&1}FqHamHCCcwyjBBXsipQMPMT"),
       event_id: build(:event),
       user_id: build(:user)
     }

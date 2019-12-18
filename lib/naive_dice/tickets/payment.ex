@@ -3,7 +3,7 @@ defmodule NaiveDice.Tickets.Payment do
   import Ecto.Changeset
 
   schema "payments" do
-    field :stripe_payment_desc, :string
+    field :stripe_payment_id, :string
     field :user_id, :id
     field :event_id, :id
 
@@ -13,7 +13,8 @@ defmodule NaiveDice.Tickets.Payment do
   @doc false
   def create_changeset(payment, attrs) do
     payment
-    |> cast(attrs, [:stripe_payment_desc])
-    |> validate_required([:stripe_payment_desc])
+    |> cast(attrs, [:stripe_payment_id])
+    |> validate_required([:stripe_payment_id])
+    |> unique_constraint(:stripe_payment_id)
   end
 end

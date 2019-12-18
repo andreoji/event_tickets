@@ -62,3 +62,17 @@ NaiveDice.Accounts.create_user(%{
   password: "k123r",
   email: "keith@acme.com"
 })
+
+NaiveDice.Accounts.create_user(%{
+  name: "charlie watts",
+  username: "charliew",
+  password: "c123w",
+  email: "charlie@acme.com"
+})
+
+NaiveDice.Accounts.create_user(%{
+  name: "brian jones",
+  username: "brianj",
+  password: "b123j",
+  email: "brian@acme.com"
+})
