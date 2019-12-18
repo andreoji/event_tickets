@@ -24,6 +24,7 @@ defmodule NaiveDice.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import NaiveDice.DataCase
+      import NaiveDiceWeb.TestHelpers.{Factory, NamedSetup}
     end
   end
 

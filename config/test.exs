@@ -3,6 +3,9 @@ use Mix.Config
 config :naive_dice,
  stripe_api: NaiveDice.Services.Stripe.InMemory
 
+config :naive_dice,
+  expiry_interval: 10
+
 # Configure your database
 config :naive_dice, NaiveDice.Repo,
   username: "andreo",

@@ -98,11 +98,11 @@ defmodule NaiveDice.Tickets do
     end
   end
 
-  def expire_users_active_reservation(id) do
+  def expire_users_active_reservation(user_id) do
     _reservation =
       from(r in Reservation,
        where: r.status == "active" and
-              r.user_id == ^id
+              r.user_id == ^user_id
       )
       |> Repo.one
       |> case do

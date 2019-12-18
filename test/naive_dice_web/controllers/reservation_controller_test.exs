@@ -15,6 +15,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
       assert reservation_count(Reservation) == (count_before + 1)
       assert redirected_to(conn) == Routes.payment_path(conn, :new)
       assert get_flash(conn, :info) == "Reservation successful"
+      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
 
     test "responds with an error message when a reservation is posted for a second time", %{
@@ -29,6 +30,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
       assert reservation_count(Reservation) == count_before
       assert redirected_to(conn) == Routes.payment_path(conn, :new)
       assert get_flash(conn, :error) == "You have a current reservation, proceed with payment"
+      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
 
     test "responds with an error message when the full name is incorrect", %{
@@ -40,6 +42,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
 
       assert reservation_count(Reservation) == count_before
       assert get_flash(conn, :error) == "The full name entered doesn't match"
+      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
   end
 
@@ -55,6 +58,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
       assert reservation_count(Reservation) == count_before
       assert redirected_to(conn) == Routes.payment_path(conn, :new)
       assert get_flash(conn, :error) == "You have a current reservation, proceed with payment"
+      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
   end
 
@@ -73,6 +77,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
       assert reservation_count(Reservation) == count_before
       assert get_flash(conn, :error) == "Sorry #{event.title} is now sold out"
       assert response(conn, 200) =~ "DON'T MISS YOUR TICKETS"
+      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
   end
 
@@ -92,6 +97,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
       reservation = reservation |> reload_reservation
 
       assert reservation.status == :active
+      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
   end
 
@@ -111,6 +117,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
       reservation = reservation |> reload_reservation
 
       assert reservation.status == :active
+      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
   end
 
@@ -126,6 +133,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
 
       assert reservation_count(Reservation) == count_before
       assert get_flash(conn, :error) == "Sorry #{event.title} is now sold out"
+      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
   end
 end

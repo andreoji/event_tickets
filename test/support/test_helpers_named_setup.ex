@@ -4,7 +4,7 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
   alias NaiveDice.Tickets.{Event, Reservation}
   alias NaiveDice.Repo
 
-  # helpers shared between reservation and payment controllers
+  # Helpers shared between reservation and payment scenarios
   def log_user_in(context), do: do_log_user_in(context)
 
   def do_log_user_in(%{conn: conn, event: _event, user: user, post_session_fun: post_session_fun} = context) do
@@ -23,6 +23,11 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
     context |> Map.merge(%{event: event})
   end
 
+   def create_user(context) do
+    user = insert(:user)
+    context |> Map.merge(%{user: user})
+  end
+
   def create_sold_out_event(context) do
     event = insert(:event, event_status: :sold_out, number_sold: 5)
     context |> Map.merge(%{event: event})
@@ -39,10 +44,10 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
   def reload_event(event), do: Repo.get(Event, event.id)
   def reload_reservation(reservation), do: Repo.get(Reservation, reservation.id)
 
-  # reservation controller only helpers
+  # Reservation scenario helpers
   def already_reserved(%{event: event, user: user} = context) do
-    insert(:reservation, event_id: event.id, user_id: user.id)
-    context
+    reservation = insert(:reservation, event_id: event.id, user_id: user.id)
+    context |> Map.merge(%{reservation: reservation})
   end
 
   def create_user_with_expired_reservation(%{event: event} = context) do
@@ -56,9 +61,16 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
     context |> Map.merge(%{reservation: reservation})
   end
 
+  def wait_for_expiry(reservation) do
+    reservation = reservation |> reload_reservation
+    do_wait_for_expiry(reservation)
+  end
+  defp do_wait_for_expiry(%Reservation{status: :expired} = reservation), do: reservation
+  defp do_wait_for_expiry(%Reservation{status: :active} = reservation), do: wait_for_expiry(reservation)
+
   def reservation_count(query), do: Repo.one(from(r in query, select: count(r.id)))
 
-  #payment controller only helpers
+  # Payment scenario helpers
   def create_reservation(%{event: event, user: user} = context) do
     reservation = insert(:reservation, event_id: event.id, user_id: user.id)
     context |> Map.merge(%{reservation: reservation})
