@@ -54,38 +54,36 @@ defmodule NaiveDice.Tickets.Test do
     end
   end
 
-  describe "reservation_status/1 when the reservation is active" do
+  describe "get_reservation/1 when the reservation is active" do
     setup [:create_event, :create_user, :already_reserved]
 
-    test "returns the active reservation tuple", %{
-      user: user,
-      reservation: reservation
+    test "returns the active reservation", %{
+      user: user
     } do
 
-      assert {:active, ^reservation} = user |> Tickets.reservation_status
+      assert %Reservation{status: :active} = user |> Tickets.get_reservation
     end
   end
 
-  describe "reservation_status/1 when the reservation is expired" do
+  describe "get_reservation/1 when the reservation is expired" do
     setup [:create_event, :create_user_with_expired_reservation]
 
-    test "returns the expired reservation tuple", %{
-      user: user,
-      reservation: reservation
+    test "returns the expired", %{
+      user: user
     } do
       
-      assert {:expired, ^reservation} = user |> Tickets.reservation_status
+      assert %Reservation{status: :expired} = user |> Tickets.get_reservation
     end
   end
 
-  describe "reservation_status/1 when the user has no reservation" do
+  describe "get_reservation/1 when the user has no reservation" do
     setup [:create_event, :create_user]
 
     test "returns the no reservation tuple", %{
       user: user
     } do
       
-      assert {:no_reservation, error} = user |> Tickets.reservation_status
+      assert {:no_reservation, error} = user |> Tickets.get_reservation
     end
   end
 

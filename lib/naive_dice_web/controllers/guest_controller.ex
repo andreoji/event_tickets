@@ -30,12 +30,12 @@ defmodule NaiveDiceWeb.GuestController do
         Logger.error(inspect e)
         conn
         |> put_flash(:error, "The teardown may have errored")
-        |> render("index.html", guests: [])
+        |> render("index.html", guests: %{})
       
       error -> Logger.error(inspect error)
         conn
         |> put_flash(:error, "The teardown may have errored")
-        |> render("index.html", guests: [])
+        |> render("index.html", guests: %{})
     end
   end
 end

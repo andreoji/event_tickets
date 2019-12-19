@@ -31,10 +31,6 @@ defmodule NaiveDiceWeb.ReservationController do
         conn
         |> put_flash(:error, error)
         |> render("_reservation.html")
-      {:active, error} ->
-        conn
-        |> put_flash(:error, error)
-        |> redirect(to: Routes.payment_path(Endpoint, :new))
       {:has_ticket, error} ->
         conn
         |> put_flash(:error, error)

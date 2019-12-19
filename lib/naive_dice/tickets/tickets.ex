@@ -22,8 +22,8 @@ defmodule NaiveDice.Tickets do
 
   def upsert_reservation(user) do
     with {:ok, event} <- Tickets.active_event,
-         {status, reservation} <- user |> Tickets.reservation_status,
-         {:ok, reservation} <- event |> do_upsert_reservation(user, {status, reservation}) do
+         reservation <- user |> Tickets.get_reservation,
+         {:ok, reservation} <- event |> do_upsert_reservation(user, reservation) do
       {:ok, reservation}
     else
       {:error, error} -> 
@@ -41,7 +41,7 @@ defmodule NaiveDice.Tickets do
     end
   end
 
-  defp do_upsert_reservation(_event, _user, {:expired, reservation}) do
+  defp do_upsert_reservation(_event, _user, %Reservation{status: :expired} = reservation) do
     with reservation <- reservation |> Ecto.Changeset.change(status: :active),
       {:ok, reservation} <- reservation |> Repo.update do
       {:ok, reservation}
@@ -49,6 +49,8 @@ defmodule NaiveDice.Tickets do
       error -> error
     end
   end
+
+  defp do_upsert_reservation(_event, _user, %Reservation{status: :active} = reservation), do: {:ok, reservation}
 
   def is_reservation_active(user) do
     from(r in Reservation,
@@ -62,11 +64,11 @@ defmodule NaiveDice.Tickets do
     end
   end
 
-  def reservation_status(user)  do
+  def get_reservation(user)  do
     Repo.get_by(Reservation, user_id: user.id)
     |> case do
         nil -> {:no_reservation, "You don't have a current reservation, proceed with reservation first"}
-        reservation -> {reservation.status, reservation}
+        reservation -> reservation
     end
   end
 
@@ -81,7 +83,7 @@ defmodule NaiveDice.Tickets do
   
   def set_reservation_expiry(reservation) do
     with {:ok, auto_id} <- @expiry_interval |> TaskAfter.task_after((fn -> reservation |> expire_active_reservation end)),
-      :ok <- auto_id |> NaiveDice.Teardown.ExpiryTasks.add_task do
+      :ok <- reservation.id |> NaiveDice.Teardown.ExpiryTasks.add_task(auto_id) do
       {:ok, auto_id}
     else 
       error ->
@@ -126,6 +128,8 @@ defmodule NaiveDice.Tickets do
         {:error, "Oops! Something went wrong"}
     end
   end
+
+  def cancel_expiry_task(reservation), do: reservation.id |> NaiveDice.Teardown.ExpiryTasks.cancel_task
 
   defp set_reservation_to_completed(reservation) do
     %Reservation{id: reservation.id}

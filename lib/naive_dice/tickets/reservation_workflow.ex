@@ -5,7 +5,6 @@ defmodule NaiveDice.Tickets.Reservation.Workflow do
     with  {:ok, ^user} <- user |> Accounts.check_name(name),
           false <- user |> Tickets.has_ticket(event),
           false <- event |> Tickets.is_sold_out,
-          false <- user |> Tickets.is_reservation_active,
           {:ok, reservation} <- user |> Tickets.upsert_reservation do
             {:ok, _auto_id} = reservation |> Tickets.set_reservation_expiry
     end

@@ -18,21 +18,6 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
       {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
 
-    test "responds with an error message when a reservation is posted for a second time", %{
-      conn: conn,
-      params: params,
-    } do
-      conn = post(conn, Routes.reservation_path(conn, :create), params)
-
-      count_before = reservation_count(Reservation)
-      conn = post(conn, Routes.reservation_path(conn, :create), params)
-
-      assert reservation_count(Reservation) == count_before
-      assert redirected_to(conn) == Routes.payment_path(conn, :new)
-      assert get_flash(conn, :error) == "You have a current reservation, proceed with payment"
-      {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
-    end
-
     test "responds with an error message when the full name is incorrect", %{
       conn: conn,
       params: params,
@@ -57,7 +42,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
 
       assert reservation_count(Reservation) == count_before
       assert redirected_to(conn) == Routes.payment_path(conn, :new)
-      assert get_flash(conn, :error) == "You have a current reservation, proceed with payment"
+      assert get_flash(conn, :info) == "Reservation successful"
       {:ok, :cancelled} = NaiveDice.Teardown.ExpiryTasks.cancel_all
     end
   end

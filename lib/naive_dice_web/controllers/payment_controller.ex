@@ -2,6 +2,7 @@ defmodule NaiveDiceWeb.PaymentController do
   use NaiveDiceWeb, :controller
   alias NaiveDiceWeb.Endpoint
   require Logger
+  alias NaiveDice.Tickets.Reservation
   alias NaiveDice.Tickets.Payment.Workflow, as: PaymentWorkflow
   alias NaiveDiceWeb.Endpoint
   import NaiveDice.Auth, only: [load_current_user: 2]
@@ -30,7 +31,7 @@ defmodule NaiveDiceWeb.PaymentController do
         conn
         |> put_flash(:error, error)
         |> render("_payment.html")
-      {:expired, _reservation} ->
+      %Reservation{status: :expired} ->
         conn
         |> put_flash(:error, "You reservation has expired, enter name again")
         |> redirect(to: Routes.reservation_path(Endpoint, :new))
