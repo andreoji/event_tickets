@@ -7,7 +7,7 @@ defmodule NaiveDice.Services.Stripe.Api do
         {:ok, charge} -> {:ok, charge}
         {:error, error} ->
           Logger.error(inspect error)
-          {:stripe_error, "The payment was unsuccessful, please try again"}
+          {:error, "The payment was unsuccessful, please try again"}
     end
   end
 end

@@ -94,7 +94,7 @@ defmodule NaiveDiceWeb.PaymentControllerTest do
     } do
       count_before = payment_count(Payment)
 
-      conn = post(conn, Routes.payment_path(conn, :create), %{"stripeEmail" => user.email, "stripeToken" => :stripe_error})
+      conn = post(conn, Routes.payment_path(conn, :create), %{"stripeEmail" => user.email, "stripeToken" => :error})
 
       assert payment_count(Payment) == count_before
       assert get_flash(conn, :error) == "The payment was unsuccessful, please try again"

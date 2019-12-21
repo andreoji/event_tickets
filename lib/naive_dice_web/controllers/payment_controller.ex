@@ -23,10 +23,14 @@ defmodule NaiveDiceWeb.PaymentController do
     PaymentWorkflow.run(email, token, user, event)
     |>
     case do
-      {:ok, _payment} ->
+      {:ok, :payment_success} ->
         conn
         |> put_flash(:info, "Payment successful")
         |> render("_congratulations.html")
+      {:payment_failed, error} ->
+        conn
+        |> put_flash(:error, error)
+        |> render("_payment.html")
       {:sold_out, error} ->
         conn
         |> put_flash(:error, error)
@@ -35,10 +39,6 @@ defmodule NaiveDiceWeb.PaymentController do
         conn
         |> put_flash(:error, "You reservation has expired, enter name again")
         |> redirect(to: Routes.reservation_path(Endpoint, :new))
-      {:stripe_error, error} ->
-        conn
-        |> put_flash(:error, error)
-        |> render("_payment.html")
       {:has_ticket, error} ->
         conn
         |> put_flash(:error, error)

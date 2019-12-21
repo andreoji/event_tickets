@@ -149,28 +149,6 @@ defmodule NaiveDice.Tickets.Test do
     end
   end
 
-  describe "create_payment/1" do
-    setup [:create_event, :create_user, :already_reserved]
-
-    test "returns a payment and sets the reservation and event accordingly", %{
-      user: user,
-      event: event,
-      reservation: reservation
-    } do
-      number_sold_before = event.number_sold
-
-      assert event.event_status == :active
-      assert {:ok, payment} = %{id: "ch_1FqHamHCCcwyjBBXsipQMPMT"} |> Tickets.create_payment(user, event, reservation)
-
-      event = event |> reload_event
-      reservation = reservation |> reload_reservation
-
-      assert reservation.status == :completed
-      assert event.number_sold == (number_sold_before + 1)
-      assert event.event_status == :active
-    end
-  end
-
   describe "is_sold_out/1 when the event isn't sold out" do
     setup [:create_event]
 

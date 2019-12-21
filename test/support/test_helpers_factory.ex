@@ -10,7 +10,8 @@ defmodule NaiveDiceWeb.TestHelpers.Factory do
   	capacity: 5,
   	price: 1999,
   	currency: "USD",
-  	event_status: "active"
+  	event_status: "active",
+    number_sold: 0
   }
 
   def insert_event do

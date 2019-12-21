@@ -115,47 +115,7 @@ defmodule NaiveDice.Tickets do
       end
   end
 
-  def create_payment(charge, user, event, reservation) do
-    with payment <- %Payment{user_id: user.id, event_id: event.id} |> Payment.create_changeset(%{stripe_payment_id: charge.id}),
-      {:ok, payment} <- payment |> Repo.insert,
-      {:ok, _reservation} <- reservation |> set_reservation_to_completed,
-      {1, nil} <- event |> increment_number_sold,
-      {:ok, _} <- event |>  set_event_to_sold_out do
-      {:ok, payment}
-    else
-      error ->
-        Logger.error(inspect error)
-        {:error, "Oops! Something went wrong"}
-    end
-  end
-
   def cancel_expiry_task(reservation), do: reservation.id |> NaiveDice.Teardown.ExpiryTasks.cancel_task
-
-  defp set_reservation_to_completed(reservation) do
-    %Reservation{id: reservation.id}
-      |> Ecto.Changeset.change(status: :completed)
-      |> Repo.update
-  end
-
-  defp increment_number_sold(event) do
-    from(e in Event,
-      update: [inc: [number_sold: 1]],
-      where: e.id == ^event.id
-    )
-    |> Repo.update_all([])
-  end
-
-  defp set_event_to_sold_out(event) do
-    event =
-      event = Repo.get(Event, event.id)
-      (event.number_sold == event.capacity)
-      |> case do
-          true ->
-            event = event |> Ecto.Changeset.change(event_status: :sold_out)
-            event |> Repo.update
-          false -> {:ok, :not_sold_out}
-      end
-  end
 
   def is_sold_out(event) do
     event = Repo.get(Event, event.id)
