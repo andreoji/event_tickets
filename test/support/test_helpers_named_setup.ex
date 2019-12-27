@@ -56,6 +56,12 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
     context |> Map.merge(%{user: user, reservation: reservation})
   end
 
+  def create_users_with_active_reservations(%{event: event} = context) do
+    users = for _i <- 1..2, do: insert(:user)
+    reservations = for u <- users, do: insert(:reservation, event_id: event.id, user_id: u.id)
+    context |> Map.merge(%{users: users, reservations: reservations})
+  end
+
   def create_an_expired_reservation(%{event: event, user: user} = context) do
     reservation = insert(:reservation, event_id: event.id, user_id: user.id, status: :expired)
     context |> Map.merge(%{reservation: reservation})

@@ -92,7 +92,7 @@ defmodule NaiveDice.Tickets do
     end
   end
 
-  defp expire_active_reservation(reservation) do
+  def expire_active_reservation(reservation) do
     reservation = Repo.get(Reservation, reservation.id)
     if (reservation.status == :active) do
       reservation = reservation |> Ecto.Changeset.change(status: :expired)
@@ -135,6 +135,19 @@ defmodule NaiveDice.Tickets do
     |> case do
         false -> false
         true -> {:has_ticket, "You have a ticket already"}
+    end
+  end
+
+  def active_reservations() do
+    with %Event{} = event <- from(e in Event, where: e.title == @event_title) |> Repo.one do
+      from(r in Reservation,
+      where: r.event_id == ^event.id and
+             r.status == "active",
+      order_by: [asc: r.id]
+      )
+      |> Repo.all
+    else
+      nil -> []
     end
   end
 
