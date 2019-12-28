@@ -72,7 +72,7 @@ defmodule NaiveDice.Tickets.Batches do
     |> Multi.run(:update_payment_with_stripe_id_step, update_payment_with_stripe_id)
   end
 
-  defp generate_random_string do
+  def generate_random_string do
     alphabet = Enum.to_list(?a..?z) ++ Enum.to_list(?0..?9)
     length = 12
     for _ <- 1..length, into: "", do: << Enum.random(alphabet) >>
