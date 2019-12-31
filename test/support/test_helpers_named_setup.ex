@@ -23,7 +23,7 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
     context |> Map.merge(%{event: event})
   end
 
-   def create_user(context) do
+  def create_user(context) do
     user = insert(:user)
     context |> Map.merge(%{user: user})
   end
@@ -39,6 +39,11 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
         |> Ecto.Changeset.change(event_status: :sold_out, number_sold: 5)
         |> Repo.update
     %{context | event: event}
+  end
+
+  def create_expired_reservation(%{event: event, user: user} = context) do
+    reservation = insert(:reservation, event_id: event.id, user_id: user.id, status: :expired)
+    context |> Map.merge(%{reservation: reservation})
   end
 
   def reload_event(event), do: Repo.get(Event, event.id)
@@ -62,11 +67,6 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
     context |> Map.merge(%{users: users, reservations: reservations})
   end
 
-  def create_an_expired_reservation(%{event: event, user: user} = context) do
-    reservation = insert(:reservation, event_id: event.id, user_id: user.id, status: :expired)
-    context |> Map.merge(%{reservation: reservation})
-  end
-
   def wait_for_expiry(reservation) do
     reservation = reservation |> reload_reservation
     do_wait_for_expiry(reservation)
@@ -79,11 +79,6 @@ defmodule NaiveDiceWeb.TestHelpers.NamedSetup do
   # Payment scenario helpers
   def create_reservation(%{event: event, user: user} = context) do
     reservation = insert(:reservation, event_id: event.id, user_id: user.id)
-    context |> Map.merge(%{reservation: reservation})
-  end
-
-  def create_expired_reservation(%{event: event, user: user} = context) do
-    reservation = insert(:reservation, event_id: event.id, user_id: user.id, status: :expired)
     context |> Map.merge(%{reservation: reservation})
   end
 

@@ -67,7 +67,7 @@ defmodule NaiveDiceWeb.ReservationControllerTest do
   end
 
   describe "create/4 when already reserved but expired" do
-    setup [:create_event, :log_user_in, :create_an_expired_reservation]
+    setup [:create_event, :log_user_in, :create_expired_reservation]
     test "responds with a success message and resets the expired reservation to active", %{
       conn: conn,
       params: params,
