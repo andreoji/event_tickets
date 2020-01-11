@@ -11,7 +11,7 @@ defmodule NaiveDice.Tickets.Test do
       user: user
     } do
       
-      {:ok, %Reservation{status: :active}} = user |> Tickets.upsert_reservation
+      assert {:ok, %Reservation{status: :active}} = user |> Tickets.upsert_reservation
     end
   end
 
