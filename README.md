@@ -1,4 +1,4 @@
-# NaiveDice
+# EventTickets
 
   * There are eight users in the system.
   * There is one event titled, "The Sound of Music".
